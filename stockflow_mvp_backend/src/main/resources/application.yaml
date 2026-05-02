@@ -1,4 +1,7 @@
 spring:
+  application:
+    name: stockflow-mvp-backend
+
   datasource:
     url: jdbc:mysql://localhost:3306/stockflow_db
     username: root
@@ -8,6 +11,13 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
 server:
   port: 8080
+
+jwt:
+  secret: 5A7134743777217A25432A462D4A614E645267556B58703273357638792F423F
+  expiration-ms: 3600000  # 1 hour

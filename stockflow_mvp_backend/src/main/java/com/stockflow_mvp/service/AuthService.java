@@ -1,15 +1,18 @@
 package com.stockflow_mvp.service;
 
-import com.stockflow_mvp.dto.AuthRequest;
 import com.stockflow_mvp.dto.AuthResponse;
+import com.stockflow_mvp.dto.LoginRequest;
+import com.stockflow_mvp.dto.SignupRequest;
 import com.stockflow_mvp.entity.Organization;
 import com.stockflow_mvp.entity.User;
+import com.stockflow_mvp.exception.BadRequestException;
+import com.stockflow_mvp.exception.ResourceNotFoundException;
 import com.stockflow_mvp.repository.UserRepository;
 import com.stockflow_mvp.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,11 +21,15 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
-
-    @Autowired
     private final OrganizationService organizationService;
 
-    public String signup(AuthRequest request) {
+    @Transactional
+    public AuthResponse signup(SignupRequest request) {
+
+        // Prevent duplicate accounts
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new BadRequestException("An account with this email already exists");
+        }
 
         Organization org = organizationService.createOrganization(request.getOrganizationName());
 
@@ -34,20 +41,31 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return "User registered successfully";
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .token(token)
+                .email(user.getEmail())
+                .organizationName(org.getName())
+                .build();
     }
 
-    public AuthResponse login(AuthRequest request) {
+    public AuthResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new BadRequestException("Invalid email or password"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+
+            throw new BadRequestException("Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
 
-        return new AuthResponse(token);
+        return AuthResponse.builder()
+                .token(token)
+                .email(user.getEmail())
+                .organizationName(user.getOrganization().getName())
+                .build();
     }
 }

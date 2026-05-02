@@ -20,6 +20,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String sku;
 
+    @Builder.Default
     @Column(nullable = false)
     private Integer quantity = 0;
 

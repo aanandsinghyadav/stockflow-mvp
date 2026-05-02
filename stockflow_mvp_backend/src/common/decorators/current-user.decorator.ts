@@ -1,16 +1,17 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { User, Organization } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 // Full user type including the eagerly loaded organization relation
-export type UserWithOrg = User & { organization: Organization };
+export type UserWithOrg = Prisma.UserGetPayload<{
+  include: { organization: true };
+}>;
 
 /**
  * Extracts the authenticated user from the request.
  * Populated by JwtStrategy.validate() after token verification.
  *
  * Usage in any controller:
- *   @Get()
- *   getProfile(@CurrentUser() user: UserWithOrg) { ... }
+ *   someMethod(@CurrentUser() user: UserWithOrg) { ... }
  */
 export const CurrentUser = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext): UserWithOrg => {

@@ -1,58 +1,67 @@
-# StockFlow MVP
+# 🚀 StockFlow MVP
 
-A minimal multi-tenant SaaS inventory management app.
+A minimal multi-tenant SaaS inventory management system built as part of a technical assessment.
 
-## Tech Stack
+🌐 **Live Demo:** https://stockflow-mvp.netlify.app  
+🔗 **GitHub Repository:** https://github.com/aanandsinghyadav/stockflow-mvp  
+
+---
+
+## 📌 Overview
+
+StockFlow is a simple inventory management application where users can:
+
+- Sign up and create their own organization
+- Manage products with stock quantities and pricing
+- View a dashboard with inventory summary and low-stock alerts
+
+Each user's data is **isolated by organization**, ensuring multi-tenant safety.
+
+---
+
+## ✨ Features
+
+### 🔐 Authentication
+- User signup & login
+- JWT-based authentication
+- Secure API access
+
+### 📦 Product Management
+- Create, update, delete products
+- SKU uniqueness per organization
+- Adjust stock levels (+/-)
+
+### 📊 Dashboard
+- Total number of products
+- Total inventory quantity
+- Low stock items based on threshold
+
+### ⚙️ Settings
+- Configurable low stock threshold (global default)
+
+---
+
+## 🧠 Key Design Decisions
+
+- **Multi-tenancy:** All data scoped by `organization_id`
+- **Security:** JWT-based authentication with protected routes
+- **Scalability:** Clean separation of backend and frontend
+- **MVP-first approach:** Focused on core features for fast delivery
+
+---
+
+## 🛠️ Tech Stack
 
 | Layer    | Technology                          |
 |----------|-------------------------------------|
 | Backend  | NestJS + Prisma + MySQL             |
 | Frontend | React + Vite + TypeScript + Tailwind |
 | Auth     | JWT (Bearer token)                  |
+| Hosting  | Railway (Backend), Netlify (Frontend) |
 
 ---
 
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- MySQL running on `localhost:3306`
-
-### Backend
-
-```bash
-cd stockflow_mvp_backend
-
-# 1. Install dependencies
-npm install
-
-# 2. Configure environment
-# Edit .env — set DATABASE_URL, JWT_SECRET
-
-# 3. Run database migration
-npm run prisma:migrate
-
-# 4. Start dev server (http://localhost:3000)
-npm run start:dev
-```
-
-### Frontend
-
-```bash
-cd stockflow_mvp_frontend
-
-# 1. Install dependencies
-npm install
-
-# 2. Start dev server (http://localhost:5173)
-npm run dev
-```
-
-The frontend proxies `/api` requests to `http://localhost:3000` automatically.
-
----
-
-## API Endpoints
+## 📦 API Endpoints
 
 | Method | Route                            | Auth | Description              |
 |--------|----------------------------------|------|--------------------------|
@@ -67,3 +76,19 @@ The frontend proxies `/api` requests to `http://localhost:3000` automatically.
 | PATCH  | /api/products/:id/adjust-stock   | ✅   | Adjust quantity +/-      |
 | GET    | /api/settings                    | ✅   | Get org settings         |
 | PUT    | /api/settings                    | ✅   | Update low stock default |
+
+---
+
+## ⚙️ Local Setup
+
+### Prerequisites
+- Node.js 18+
+- MySQL running on `localhost:3306`
+
+### Backend
+
+```bash
+cd stockflow_mvp_backend
+npm install
+npm run prisma:migrate
+npm run start:dev

@@ -9,9 +9,15 @@ async function bootstrap() {
   // Global prefix — all routes become /api/auth, /api/products, etc.
   app.setGlobalPrefix('api');
 
-  // CORS — allow React dev servers
+  // CORS — allow frontend origins (set FRONTEND_URL env var in production)
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    process.env.FRONTEND_URL,        // e.g. https://stockflow-mvp.netlify.app
+  ].filter(Boolean) as string[];
+
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:5173'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Authorization', 'Content-Type'],
     credentials: true,

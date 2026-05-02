@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+// In production (Netlify), VITE_API_URL = https://your-app.onrender.com/api
+// In development, empty string so Vite proxy handles /api → localhost:3000
+const baseURL = import.meta.env.VITE_API_URL || '/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL,
   headers: { 'Content-Type': 'application/json' },
 });
 

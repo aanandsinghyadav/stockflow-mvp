@@ -1,3 +1,13 @@
 spring:
-  application:
-    name: stockflow_mvp_backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/stockflow_db
+    username: root
+    password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 8080
